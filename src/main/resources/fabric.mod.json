@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "id": "eternity",
+  "version": "${version}",
+  "name": "eternity",
+  "description": "Eternity is a simple skyblock QOL mod. Ytka sack dick",
+  "authors": [
+    "glsa",
+    "AKA_megawattka"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+  "license": "CC0-1.0",
+  "icon": "assets/eternity/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      {
+        "value": "org.mgwt.eternity.Eternity",
+        "adapter": "kotlin"
+      }
+    ],
+    "modmenu": [
+      "org.mgwt.eternity.compat.ModMenuImpl"
+    ]
+  },
+  "mixins": [
+    "eternity.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.18.4",
+    "minecraft": "~1.21.10",
+    "java": ">=21",
+    "fabric-api": "*",
+    "fabric-language-kotlin": "*"
+  }
+}
