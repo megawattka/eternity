@@ -51,11 +51,10 @@ object Eternity : ModInitializer {
             }
         }
         ClientPlayConnectionEvents.JOIN.register { handler, sender, client ->
-            SkyblockUtils.isOnSkyblock()
-            println("im joined server!")
+            logger.info("im joined server!")
         }
         ClientLifecycleEvents.CLIENT_STARTED.register(ClientStarted {
-            logger.info("CLIENT STARTED")
+            logger.info("client started!")
         })
         ClientCommandRegistrationCallback.EVENT.register { dispatcher: CommandDispatcher<FabricClientCommandSource?>, registryAccess: CommandRegistryAccess? ->
             EternityCommand.register(dispatcher, registryAccess)
@@ -73,6 +72,7 @@ object Eternity : ModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register { client: MinecraftClient ->
             val world = client.world ?: return@register
             val ghostBlockKeyBind = configManager.getConfig().dungeons.ghostBlockKeybind
+            if (ghostBlockKeyBind == -1) return@register
             if (InputUtil.isKeyPressed(client.window, ghostBlockKeyBind)) {
                 val mop = client.player?.raycast(5.0, 1.0F, false)
                 if (mop != null && mop.type != HitResult.Type.MISS) {
