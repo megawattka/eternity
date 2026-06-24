@@ -1,0 +1,13 @@
+{
+	"midnightlib.overview.title":"MidnightConfig күзәтү",
+	"midnightlib.midnightconfig.title":"MidnightLib көйләүләре",
+	"midnightlib.midnightconfig.config_screen_list":"Көйләүләр экранының исемлеген кушу",
+	"midnightlib.midnightconfig.enum.ConfigButton.TRUE":"§aӘйе",
+	"midnightlib.midnightconfig.enum.ConfigButton.FALSE":"§cЮк",
+	"midnightlib.wiki":"Вики",
+	"midnightconfig.colorChooser.title": "Төсне сайлагыз",
+    "midnightconfig.action.list_index": "Исемлекне %s индекста үзгәртү",
+    "midnightconfig.action.color_chooser": "Төс сайлагычын ачу",
+    "midnightconfig.action.file_chooser": "Файл сайлагычын ачу",
+	"modmenu.summaryTranslation.midnightlib": "MidnightDust төркеменең модлары өчен гомуми китапханә."
+}

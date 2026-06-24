@@ -2,42 +2,16 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "2.3.10"
-    id("fabric-loom") version "1.13-SNAPSHOT"
-    id("com.github.johnrengelman.shadow") version "8.1.0"
+    kotlin("jvm") version "2.4.0"
+    id("net.fabricmc.fabric-loom") version "1.17-SNAPSHOT"
 }
 
 version = project.property("mod_version") as String
 group = project.property("maven_group") as String
+val midnightLib = "eu.midnightdust:midnightlib:${project.property("midnight_lib_version")}"
 
 base {
     archivesName.set(project.property("archives_base_name") as String)
-}
-
-val targetJavaVersion = 21
-java {
-    toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
-    // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-    // if it is present.
-    // If you remove this line, sources will not be generated.
-    withSourcesJar()
-}
-
-repositories {
-    // Add repositories to retrieve artifacts from in here.
-    // You should only use this when depending on other mods because
-    // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-    // See https://docs.gradle.org/current/userguide/declaring_repositories.html
-    // for more information about repositories.
-    maven("https://api.modrinth.com/maven/") {
-        name = "Modrinth"
-    }
-    maven("https://maven.notenoughupdates.org/releases/")
-    maven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
-}
-
-val shadowModImpl: Configuration by configurations.creating {
-    configurations.modImplementation.get().extendsFrom(this)
 }
 
 loom {
@@ -46,58 +20,45 @@ loom {
             vmArg("-Ddevauth.enabled=true")
         }
     }
+    accessWidenerPath = file("src/main/resources/eternity.accesswidener")
+}
+
+val targetJavaVersion = 25
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    withSourcesJar()
+}
+
+repositories {
+    maven("https://maven.terraformersmc.com/releases" ) {
+        name = "Modrinth"
+    }
+    maven("https://maven.midnightdust.eu/releases")
+    maven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
 }
 
 dependencies {
-    // To change the versions see the gradle.properties file
-    minecraft("com.mojang:minecraft:${project.property("minecraft_version")}")
-    mappings("net.fabricmc:yarn:${project.property("yarn_mappings")}:v2")
-    modImplementation("net.fabricmc:fabric-loader:${project.property("loader_version")}")
-    modImplementation("net.fabricmc:fabric-language-kotlin:1.13.9+kotlin.2.3.10")
+    minecraft("com.mojang:minecraft:26.2")
+    implementation("net.fabricmc:fabric-loader:0.19.3")
+    implementation("net.fabricmc:fabric-language-kotlin:1.13.12+kotlin.2.4.0")
+    implementation("net.fabricmc.fabric-api:fabric-api:0.152.2+26.2")
+    implementation("com.terraformersmc:modmenu:20.0.0-beta.4")
 
-    modImplementation("net.fabricmc.fabric-api:fabric-api:0.138.4+1.21.10")
-    modImplementation("maven.modrinth:modmenu:16.0.0")
-    modRuntimeOnly("me.djtheredstoner:DevAuth-fabric:1.2.2")
-    shadowModImpl("org.notenoughupdates.moulconfig:modern-1.21.10:4.3.0-beta")
+    runtimeOnly("me.djtheredstoner:DevAuth-fabric:1.2.2")
 }
-
 tasks.processResources {
     inputs.property("version", project.version)
-    inputs.property("minecraft_version", project.property("minecraft_version"))
-    inputs.property("loader_version", project.property("loader_version"))
+    inputs.property("minecraft_version", project.property("minecraft_version") as String)
+    inputs.property("loader_version", project.property("loader_version") as String)
     filteringCharset = "UTF-8"
 
     filesMatching("fabric.mod.json") {
-        expand("version" to project.version,
-            "minecraft_version" to "1.21.10",
-            "loader_version" to "0.18.4")
+        expand(
+            "version" to project.version,
+            "minecraft_version" to (project.property("minecraft_version") as String),
+            "loader_version" to (project.property("loader_version") as String)
+        )
     }
-}
-
-tasks.shadowJar {
-    configurations = listOf(shadowModImpl)
-    archiveClassifier.set("shadowed")  // Don't overwrite main jar
-    relocate("io.github.notenoughupdates.moulconfig", "org.mgwt.eternity.dependencies.moulconfig")
-    mergeServiceFiles()
-}
-
-// Make remapJar use shadowJar output as input
-tasks.remapJar {
-    dependsOn(tasks.shadowJar)
-    input.set(tasks.shadowJar.flatMap { it.archiveFile })
-}
-
-tasks.withType<JavaCompile>().configureEach {
-    // ensure that the encoding is set to UTF-8, no matter what the system default is
-    // this fixes some edge cases with special characters not displaying correctly
-    // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
-    // If Javadoc is generated, this must be specified in that task too.
-    options.encoding = "UTF-8"
-    options.release.set(targetJavaVersion)
-}
-
-tasks.withType<KotlinCompile>().configureEach {
-    compilerOptions.jvmTarget.set(JvmTarget.fromTarget(targetJavaVersion.toString()))
 }
 
 tasks.jar {
@@ -106,4 +67,13 @@ tasks.jar {
     }
 }
 
-tasks.assemble.get().dependsOn(tasks.remapJar)
+tasks.withType<JavaCompile>().configureEach {
+    options.encoding = "UTF-8"
+    options.release.set(targetJavaVersion)
+}
+
+tasks.withType<KotlinCompile>().configureEach {
+    compilerOptions.jvmTarget.set(JvmTarget.fromTarget(targetJavaVersion.toString()))
+}
+
+tasks.assemble.get().dependsOn(tasks.jar)

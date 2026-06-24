@@ -1,33 +1,32 @@
 package org.mgwt.eternity
 
+import com.mojang.brigadier.Command
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.context.CommandContext
-import io.github.notenoughupdates.moulconfig.gui.GuiContext
-import io.github.notenoughupdates.moulconfig.gui.GuiElementComponent
-import io.github.notenoughupdates.moulconfig.platform.MoulConfigScreenComponent
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager
+import eu.midnightdust.lib.config.MidnightConfig
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
-import net.minecraft.command.CommandRegistryAccess
-import net.minecraft.text.Text
-import org.mgwt.eternity.utils.SkyblockUtils
+import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.components.tabs.Tab
+import net.minecraft.commands.CommandBuildContext
+import org.mgwt.eternity.utils.TabListUtils
+
+//import org.mgwt.eternity.utils.SkyblockUtils
 
 
 object EternityCommand {
     fun register(
-        dispatcher: CommandDispatcher<FabricClientCommandSource?>,
-        registryAccess: CommandRegistryAccess?
+        dispatcher: CommandDispatcher<FabricClientCommandSource>,
+        registryAccess: CommandBuildContext
     ) {
         dispatcher.register(
-            ClientCommandManager.literal("eternity")
+            ClientCommands.literal("eternity")
                 .executes { context: CommandContext<FabricClientCommandSource> ->
-                    val editor = Eternity.configManager.getConfigEditor()
-                    val element = MoulConfigScreenComponent(
-                        Text.empty(),
-                        GuiContext(GuiElementComponent(editor)),
-                        null
-                    )
-                    Eternity.nextScreen = element
-                    0
+                    val mc = Minecraft.getInstance()
+                    mc.execute {
+                        mc.gui.setScreen(MidnightConfig.getScreen(null, "eternity"))
+                    }
+                    Command.SINGLE_SUCCESS
                 })
     }
 }

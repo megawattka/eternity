@@ -1,22 +1,22 @@
 package org.mgwt.eternity.utils
 
-import net.minecraft.client.MinecraftClient
-import net.minecraft.text.MutableText
-import net.minecraft.text.Text
+import net.minecraft.client.Minecraft
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.MutableComponent
 
 object ChatUtils {
-    private val prefix: Text = Text.of("§e[§6Eternity§e] ")
+    private val prefix: Component = Component.literal("§e[§6Eternity§e] ")
 
-    fun sendMessage(component: Text) {
-        val player = MinecraftClient.getInstance().player ?: return
-        player.sendMessage(component, false)
+    fun sendMessage(component: Component) {
+        val player = Minecraft.getInstance().player ?: return
+        player.sendSystemMessage(component)
     }
-    fun sendMessageWatermarked(component: Text) {
-        sendMessage((prefix as MutableText).append(component))
+    fun sendMessageWatermarked(component: Component) {
+        sendMessage((prefix as MutableComponent).append(component))
     }
 
     fun sendCommand(command: String) {
-        val mc = MinecraftClient.getInstance()
-        mc.networkHandler?.sendChatCommand(command)
+        val mc = Minecraft.getInstance()
+        mc.connection?.sendCommand(command)
     }
 }

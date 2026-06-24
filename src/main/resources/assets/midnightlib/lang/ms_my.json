@@ -1,0 +1,8 @@
+{
+	"midnightlib.overview.title": "Ikhtisar MidnightConfig",
+	"midnightlib.midnightconfig.title": "Konfigurasi MidnightLib",
+	"midnightlib.midnightconfig.config_screen_list": "Dayakan Senarai Skrin Konfigurasi",
+	"midnightlib.midnightconfig.enum.ConfigButton.TRUE": "§aYa",
+	"midnightlib.midnightconfig.enum.ConfigButton.FALSE": "§cTidak",
+	"modmenu.summaryTranslation.midnightlib": "Pustaka Biasa untuk konfigurasi mudah."
+}

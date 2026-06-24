@@ -1,0 +1,8 @@
+{
+	"midnightlib.overview.title":"Vue d'ensemble de MidnightConfig",
+	"midnightlib.midnightconfig.title":"Configuration de MidnightLib",
+	"midnightlib.midnightconfig.config_screen_list":"Activer la liste de l'écran de configuration",
+	"midnightlib.midnightconfig.enum.ConfigButton.TRUE":"§aOui",
+	"midnightlib.midnightconfig.enum.ConfigButton.FALSE":"§cNon",
+	"modmenu.summaryTranslation.midnightlib": "Bibliothèque commune pour les mods de la Team MidnightDust."
+}

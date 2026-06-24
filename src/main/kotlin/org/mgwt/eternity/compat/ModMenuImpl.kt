@@ -2,20 +2,13 @@ package org.mgwt.eternity.compat
 
 import com.terraformersmc.modmenu.api.ConfigScreenFactory
 import com.terraformersmc.modmenu.api.ModMenuApi
-import io.github.notenoughupdates.moulconfig.gui.GuiContext
-import io.github.notenoughupdates.moulconfig.gui.GuiElementComponent
-import io.github.notenoughupdates.moulconfig.platform.MoulConfigScreenComponent
-import net.minecraft.text.Text
+import eu.midnightdust.lib.config.MidnightConfig
+import net.minecraft.client.gui.screens.Screen
 import org.mgwt.eternity.Eternity
+
 
 class ModMenuImpl : ModMenuApi {
     override fun getModConfigScreenFactory(): ConfigScreenFactory<*> {
-        return ConfigScreenFactory {
-            MoulConfigScreenComponent(
-                Text.empty(),
-                GuiContext(GuiElementComponent(Eternity.configManager.getConfigEditor())),
-                null
-            )
-        }
+        return ConfigScreenFactory { parent: Screen? -> MidnightConfig.getScreen(parent, "eternity") }
     }
 }
